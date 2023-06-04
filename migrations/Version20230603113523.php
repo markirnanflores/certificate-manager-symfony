@@ -25,7 +25,8 @@ final class Version20230603113523 extends AbstractMigration
             `name` VARCHAR(255) NOT NULL,
             `certificate` VARCHAR(255) NOT NULL,
             `private_key` VARCHAR(255) NOT NULL,
-            `intermediate_ca` VARCHAR(255)
+            `intermediate_ca` VARCHAR(255),
+            PRIMARY KEY(id)
         );');
     }
 

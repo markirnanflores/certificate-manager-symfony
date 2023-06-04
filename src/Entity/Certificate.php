@@ -6,6 +6,7 @@ use App\Repository\CertificateRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: CertificateRepository::class)]
+#[ORM\Table(name: 'certificates')]
 class Certificate
 {
     #[ORM\Id]
