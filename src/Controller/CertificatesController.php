@@ -3,8 +3,13 @@
 namespace App\Controller;
 
 use App\Entity\Certificate;
+use App\Exception\ConstraintValidationException;
+use App\Model\Http\Request\CertificateModel;
+use App\Model\Http\Response\ValidationResponse;
+use App\Validator\CertificateRequest;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
@@ -28,19 +33,25 @@ class CertificatesController extends AbstractController
 
     #[Route('/certificates', name: 'certificate_store', methods: ['POST'])]
     public function store(
+        CertificateRequest $certificateRequestValidator,
         EntityManagerInterface $entityManager,
         Request $request,
         SerializerInterface $serializer
-    ): JsonResponse { 
-        $payload = $request->getPayload()->all();
-        $certificate = new Certificate();
-        $certificate->setName($payload['name'] ?? null);
-        $certificate->setCertificate($payload['certificate'] ?? null);
-        $certificate->setPrivateKey($payload['privateKey'] ?? null);
-        $certificate->setIntermediateCa($payload['intermediateCa'] ?? null);
-        $entityManager->persist($certificate);
-        $entityManager->flush();
-        return $this->json(json_decode($serializer->serialize($certificate, 'json')));
+    ): JsonResponse {
+        try{
+            $certificateRequest = new CertificateModel($request->getPayload());
+            $certificateRequestValidator->validate($certificateRequest);
+            $certificate = new Certificate();
+            $certificate->setName($certificateRequest->getName());
+            $certificate->setCertificate($certificateRequest->getCertificate());
+            $certificate->setPrivateKey($certificateRequest->getPrivateKey());
+            $certificate->setIntermediateCa($certificateRequest->getIntermediateCa());
+            $entityManager->persist($certificate);
+            $entityManager->flush();
+            return $this->json(json_decode($serializer->serialize($certificate, 'json')));
+        } catch(ConstraintValidationException $e) {
+            return new ValidationResponse($e->getViolationList());
+        }
     }
 
     #[Route('/certificates/{id}', name: 'certificate_show', methods: ['GET'])]

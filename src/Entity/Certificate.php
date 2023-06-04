@@ -6,7 +6,7 @@ use App\Repository\CertificateRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: CertificateRepository::class)]
-#[ORM\Table(name: 'certificates')]
+#[ORM\Table(name: CertificateRepository::TABLE_NAME)]
 class Certificate
 {
     #[ORM\Id]
@@ -17,13 +17,13 @@ class Certificate
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(type: 'text')]
     private ?string $certificate = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(type: 'text')]
     private ?string $private_key = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(type: 'text', nullable: true)]
     private ?string $intermediate_ca = null;
 
     public function getId(): ?int

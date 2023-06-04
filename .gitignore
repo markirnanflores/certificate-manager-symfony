@@ -10,3 +10,4 @@
 /vendor/
 ###< symfony/framework-bundle ###
 /.vscode/
+/.php-cs-fixer.cache
