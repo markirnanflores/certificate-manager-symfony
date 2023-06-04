@@ -64,7 +64,7 @@
             "@auto-scripts"
         ],
         "resources" : [
-            "cd resources/app && ng build --output-path=../../public"
+            "cd resources/app && ng build && cd ../.."
         ]
     },
     "conflict": {
